@@ -1,0 +1,508 @@
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>设置</title>
+
+<link rel="stylesheet" href="./node_modules/ratchet-npm/dist/css/ratchet.css">
+<!-- <link rel="stylesheet" href="./node_modules/range/pickout.css"> -->
+<link rel="stylesheet" href="./node_modules/range/jquery.range.css">
+<link rel="stylesheet" href="./node_modules/slider/on_off_switch.css">
+
+<style type="text/css">
+	ul {
+		list-style: none;
+	}
+
+	.segmented-control {
+		margin: 60px 20px 0;
+	}
+	.control-item {
+		/* background: red; */
+		margin-left: 10px;
+	}
+	body,.ul-item {
+		background: #ccc;
+	}
+	.li-item {
+		margin: 10px 20px;
+		background: #fff;
+		/* text-align: center; */
+		padding: 0 15px;
+	}
+	.li-item p {
+		/* align-content: center; */
+		margin: 0 auto;
+		text-align: center;
+		border-bottom: 2px solid #ccc;
+		/* background: red; */
+	}
+
+	.li-item a {
+		/* background: red; */
+		display: block;
+		text-align: center;
+		/* margin: 0 auto; */
+	}
+	.li-item a .toggle {
+		margin: 0 auto;
+	}
+	.segmented-control {
+		background: #fff;
+		line-height: 45px;
+		border: none;
+	}
+	.segmented-control .control-item.active {
+    	background-color: #fff;
+	}
+
+	/* num选择列表 */
+	.station-mask,.num-mask {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: black;
+	    opacity: 0.7;
+		z-index: 10;
+
+		color: #fff;
+
+		display: none;
+
+		text-align: left;
+		line-height: 100%;
+
+		padding-top: 100px;
+	}
+    #station-list li{
+		margin-top: 30px;
+		/* background: orange; */
+		font-size: 25px;
+
+		border-bottom: 1px solid black;
+		padding-left: 30%;
+
+		cursor: pointer;
+	}
+	#num-list li {
+		margin-top: 20px;
+
+		border-bottom: 1px solid black;
+		
+		padding-left: 30%;
+
+		cursor: pointer;
+	}
+	.station-mask h2 {
+		padding-left: 20%;
+	}
+	.num-mask h2 {
+		padding-left: 20%;
+	}
+
+	/* 进度条 */
+	.demo {
+		width: 350px;
+		margin: 5px auto 10px auto;
+		/* background: red; */
+	}
+	#g1,#g2 {
+		margin-top:50px
+	}
+	.content {
+		margin:50px auto 0;
+		width:300px;
+		min-height: 500px;
+	}
+	.form-group {
+		width: 100%;
+		float: left;
+		margin: 5px 0;
+	}
+	label {
+		margin-bottom:10px;
+		float:left;
+	}
+	.field-input, select{
+		width:calc(100% - 20px);
+		float:left;
+		padding:10px;
+		font-family:inherit;
+	}
+	 .slider-container .back-bar {
+		height: 10px;
+		border-radius: 3px;
+	}
+	 .slider-container .back-bar .pointer {
+	 		width: 18px;
+	 		height: 18px;
+	 		border-radius: 50%;
+	 		background-image: -webkit-radial-gradient(ellipse at right top, #fff, #8E6703);
+	 		background-image: radial-gradient(ellipse at right top, #fff, #8E6703);
+	 }
+
+	/* 切换按钮 */
+	.testswitch {
+		margin-top: 20px;
+		margin-left: 5px;
+	}
+	#test {
+		overflow: hidden;
+		width: 286px;
+		line-height: 44px;
+		margin: 0 auto;
+	}
+	.testswitch-switch {
+			background-image: -webkit-radial-gradient(ellipse at right top, #fff, #8E6703);
+	 		background-image: radial-gradient(ellipse at right top, #fff, #8E6703);
+	}
+</style>
+
+<script src="./node_modules/jquery/dist/jquery.js"></script>
+<script src="./node_modules/ratchet-npm/dist/js/ratchet.js"></script>
+<!-- <script src="./node_modules/range/pickout.js"></script> -->
+<script src="./node_modules/range/jquery.range.js"></script>
+</head>
+<body>
+	<!-- 选择基站的列表 -->
+	<div class="station-mask">
+		<h2>基站</h2>
+		<ul id="station-list">
+		</ul>
+	</div>	
+
+	<!-- num遮罩列表 -->
+	<div class="num-mask">
+		<h2>编号</h2>
+		<ul id="num-list">
+		</ul>
+	</div>
+
+	<header class="bar bar-nav">
+		<a class="icon icon-person pull-right"></a>
+	</header>
+
+	<div class="segmented-control">
+		<a id="station" class="control-item active">
+		  基站 Base Stations
+		</a>
+		<a id="num" class="control-item">
+		  编号 Number
+		</a>
+		<a id="position" class="control-item">
+		  位置 Positions
+		</a>
+	</div>
+
+	<ul class="table-view ul-item">
+		<li class="table-view-cell media li-item">
+		  <p>光源参数</<p>
+			<ul class="table-view">
+				<li class="table-view-cell">电压(Voltage) <span class="badge" id="voltage-item">AC85-277V</span></li>
+				<li class="table-view-cell">电流(Current)<span class="badge" id="current-item">5.25A</span></li>
+				<li class="table-view-cell">温度(Temperature)<span class="badge" id="temp-item">52.3°C</span></li>
+			</ul>
+		</li>
+		<li class="table-view-cell media li-item">
+		  <p>相关调整</p>
+		  <ul class="table-view">
+				<li class="table-view-cell">
+					<div class="demo">
+						<input id="baseTemp" type="hidden" class="single-slider"  name="BaseTemperature" />
+						<!-- <button id="g1">获取值</button> -->
+					</div>
+				</li>
+				<li class="table-view-cell">
+					<div class="demo">
+						<input id="colorTemp" type="hidden" class="single-slider color-slider"  name="ColorTemperature"/>
+						<!-- <button id="g1">获取值</button> -->
+					</div>
+				</li>
+				<li class="table-view-cell">
+					<div class="demo">
+						<input id="brightness" type="hidden" class="single-slider"  name="Brightness"/>
+							<!-- <button id="g1">获取值</button> -->
+					</div>
+				</li>
+		  </ul>
+		</li>
+		<li id="on-off" class="table-view-cell media li-item">
+			<p>相关功能</p>
+			<div id="test">
+			<div class="testswitch" id="read">
+				<input class="check-demo testswitch-checkbox custom-switch switch-one" id="Readswitch" type="checkbox">
+				<label class="testswitch-label" for="Readswitch">
+					<span class="testswitch-inner" data-on="Read..." data-off="Read"></span>
+					<span class="testswitch-switch"></span>
+				</label>
+			</div>
+
+			<div class="testswitch">
+				<input class="check-demo testswitch-checkbox switch-two" id="SetUPswitch" type="checkbox">
+				<label class="testswitch-label" for="SetUPswitch">
+					<span class="testswitch-inner" data-on="SetUP..." data-off="SetUP"></span>
+					<span class="testswitch-switch"></span>
+				</label>
+			</div>
+
+			<div class="testswitch">
+				<input class="check-demo testswitch-checkbox" id="onoffswitch" type="checkbox">
+				<label class="testswitch-label" for="onoffswitch">
+					<span class="testswitch-inner" data-on="_ON_" data-off=" _OFF_"></span>
+					<span class="testswitch-switch"></span>
+				</label>
+			</div>
+			</div>
+		</li>
+	</ul>
+
+	  <script>
+		$(function(){
+// ––––––––––––––––滑动条–––––––––––––––––––
+			$('.single-slider').jRange({
+				from: 0,
+				to: 100,
+				step: 0.01,
+				scale: [0,25,50,75,100],
+				format: '%s',
+				width: 330,
+				showLabels: true,
+				showScale: true
+			});
+
+// –––––––––––––––––滑动按钮––––––––––––––––––––––––
+			$("#Readswitch").on('click', function () {
+				// 点击添加类名
+				$('.switch-one').addClass('testswitch-checkbox');
+
+				readswitch()
+			});
+			$("#SetUPswitch").on('click', function () {
+				$('.switch-two').addClass('testswitch-checkbox');
+
+				setUPswitch()
+			});
+			$("#onoffswitch").on('click', function () {
+				clickOnOff();
+			});
+
+			var readswitch = function() {
+				if ($("#Readswitch").is(':checked')) {
+					console.log("读取数据");
+					// baseStation
+					var baseStation = $('#station').html().slice(3);
+					// 编号
+					var number = $('#num').html().slice(3);
+					console.log(baseStation);
+					console.log(number);
+					$.ajax({
+						url: 'http://162.219.124.143:8080/AdvancedRay/ReadDevicesStatus',
+						type: 'post',
+						dataType: 'json',
+						data: {
+							BaseStation: baseStation,
+							Number: number
+						},
+						contentType: 'application/x-www-form-urlencoded',
+						success: function (value) {
+							if(value.message === 'success') {
+								console.log(value);
+								// 展示数据
+								var data = value.data;
+								// 电压
+								$('#voltage-item').html(data.voltage.toFixed(2)+'V');
+								// 电流
+								$('#current-item').html(data.current.toFixed(2)+'A');
+								// 温度
+								$('#temp-item').html(data.deviceTemperature.toFixed(2)+'°C');
+								// 基本温度
+								// 问题改变了val值,页面并不发生变化
+								$('#baseTemp').jRange('setValue', data.baseTemperature);
+								// 色温
+								$('#colorTemp').jRange('setValue', data.colorTemperature);
+								// brightness
+								$('#brightness').jRange('setValue', data.brightness);
+
+								// 关闭请求数据的按钮
+								$(".switch-one").removeAttr("checked");
+								// alert(123);
+								setTimeout(() => {
+									$('.switch-one').removeClass('testswitch-checkbox');
+								}, 400);
+							}
+						},
+						error: function (err) {
+							console.log(err);
+						}
+					});
+				} else {
+					console.log("关闭读取数据");
+				}
+			};
+			var setUPswitch = function() {
+				if ($("#SetUPswitch").is(':checked')) {
+					// console.log("上传数据");
+					var baseStation = $('#station').html().slice(3);
+					// 编号
+					var number = $('#num').html().slice(3);
+					// 基本温度
+				    var baseTemp =  $('#baseTemp').jRange('getValue');
+					// 色温
+					var colorTemp = $('#colorTemp').jRange('getValue');
+					// brightness
+					var brightness = $('#brightness').jRange('getValue');
+					console.log('1:'+baseTemp);
+					console.log('2:'+colorTemp);
+					console.log('3:'+brightness);
+					$.ajax({
+						url: 'http://162.219.124.143:8080/AdvancedRay/SetDevices',
+						type: 'post',
+						dataType: 'json',
+						data: {
+							BaseStation: baseStation,
+							Number: number,
+							BaseTemperature: baseTemp,
+							ColorTemperature: colorTemp,
+							Brightness: brightness
+						},
+						contentType: 'application/x-www-form-urlencoded',
+						success: function (value) {
+							if(value.message === 'success') {
+								console.log('数据上传成功');
+								console.log(value);
+								// 关闭请求数据的按钮
+								$(".switch-two").removeAttr("checked");
+								// alert(123);
+								setTimeout(() => {
+									$('.switch-two').removeClass('testswitch-checkbox');
+								}, 400);
+							}
+						},
+						error: function (err) {
+							console.log(err);
+						}
+					});
+				} else {
+					console.log("上传数据关闭");
+				}
+			};
+			var clickOnOff = function() {
+				if ($("#onoffswitch").is(':checked')) {
+					console.log("在ON的状态下");
+					onOrOff('ON');
+				} else {
+					// console.log("在OFF的状态下");
+					onOrOff('OFF');
+				}
+			};
+
+			// 改变on-off按钮状态的封装方法
+			function onOrOff (state) {
+				// 基站
+				var baseStation = $('#station').html().slice(3);
+				// 编号
+				var number = $('#num').html().slice(3);
+				$.ajax({
+					url: 'http://162.219.124.143:8080/AdvancedRay/setSwitch',
+					type: 'post',
+					dataType: 'json',
+					contentType: 'application/x-www-form-urlencoded',
+					data: {
+						BaseStation: baseStation,
+						Number: number,
+						Switch: state
+					},
+					success: function (value) {
+						if(value.message === 'success') {
+							console.log(value);
+						}
+					},
+					error: function (err) {
+						console.log(err);
+					}
+				});
+			}
+
+
+//––––––––––––––––––––––业务操作–––––––––––––––––––––
+			// 请求数据
+			getData();
+
+			// 点击 基站 Base Stations 按钮
+			$('#station').click(function () {
+				$('.station-mask').css('display', 'block');
+			});
+
+			// 点击num按钮进行选择
+			$('#num').click(function () {
+				// alert(2333);
+				$('.num-mask').css('display', 'block');
+			});
+		});
+
+		// 1.请求数据
+		function getData () {
+			$.ajax({
+				url: 'http://162.219.124.143:8080/AdvancedRay/GetDevicesList ',
+				type: 'post',
+				dataType: 'json',
+				contentType: 'application/x-www-form-urlencoded',
+				success: function (value) {
+					if(value.message === 'success') {
+						console.log(value);
+						selectStation(value.data.Devicesinfo);
+					}
+				},
+				error: function (err) {
+					console.log(err);
+				}
+			});
+		}
+
+		// 选择基站
+		function selectStation (val) {
+			if (val.length <= 0) return;
+			// 动态生成li标签
+			$('#station-list').html('');
+			$(val).each(function (index, item) {
+				$('#station-list').append('<li title="'+index+'">' + item.baseStation + '</li>');
+			});
+
+			// 添加点击事件,利用事件代理
+			$('#station-list').on('click', function (event) {
+				console.log(event.target.title);
+				var index = event.target.title;
+				if (event.target.tagName === 'LI') {
+					$('.station-mask').css('display', 'none');
+					// var station = event.target.innerText;
+					$('#station').html('基地 ' + event.target.innerText);
+					$('#position').html(val[index].position)
+
+					// 根据不同基站, 选择相应基站下的编号
+					// console.log(val[index].number.number);
+					selectNum(val[index].number.number);
+				}
+			});
+		}
+
+		// 选择编号(有不同的基站决定)
+		function selectNum (val) {
+			if (val.length <= 0) return;
+			$('#num-list').html('');
+			$(val).each(function (index, item) {
+				$('#num-list').append('<li title="'+index+'">' + item + '</li>');
+			});
+			$('#num-list').on('click', function (event) {
+				// console.log(event.target.title);
+				var index = event.target.title;
+				if (event.target.tagName === 'LI') {
+					$('.num-mask').css('display', 'none');
+					$('#num').html('编号 ' + event.target.innerText);
+				}
+			});
+		}
+	  </script>
+</body>
+</html>

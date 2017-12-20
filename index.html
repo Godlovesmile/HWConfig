@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>登录</title>
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="this is my page">
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="./node_modules/ratchet-npm/dist/css/ratchet.css">
+
+    <style>
+      body {
+        background: #2B2F31;
+        /* position: relative;  */
+      }
+      .login {
+        margin: 20% 20% 10px;
+      }
+      #login-btn {
+       margin: 10px 20%;
+      }
+      .btn {
+        background: #1B2B46;
+        /* border: 1px  */
+      }
+      #title-content {
+        color: #fff;
+        /* margin-top: 100px; */
+        position: absolute;
+        /* left: 50%; */
+        bottom: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <input type="checkbox" checked>
+
+    <form class="login" method="post">
+      <input type="text" placeholder="用户名">
+      <input type="text" placeholder="密码">
+    </form>
+    <div id="login-btn">
+      <button class="btn btn-positive btn-block" onclick="onSubmit()">LOGIN</button>
+    </div>
+
+    <div id="title-content" class="title">
+      智能路灯监控系统
+    </div>
+    
+    <script src="./node_modules/jquery/dist/jquery.js"></script>
+
+    <script>
+      function onSubmit () {
+        $.ajax({
+          url: 'http://162.219.124.143:8080/AdvancedRay/LoginUser',
+          type: 'post',
+          dataType: 'json',
+          contentType: 'application/x-www-form-urlencoded',
+          success: function (value) {
+              if(value.message === 'success') {
+                window.location.href = "./set.html";
+              }
+          },
+          error: function (err) {
+              console.log(err);
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

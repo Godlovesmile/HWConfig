@@ -1,0 +1,127 @@
+
+/***************************************************************/
+
+http://162.219.124.143:8080/AdvancedRay/LoginUser 
+
+
+POST请求需要传输数据   "username" 用户名  "password" 密码
+
+登录成功回复
+{
+	"code":1,
+	"data":"",
+	"message":"success"
+}
+收到登录成功的回复后跳转到set界面。如果登录失败弹框提示失败！
+
+/***************************************************************/
+
+登录成功后，跳转到set页面，然后请求下面的接口GetDevicesList 获得设备列表，然后解析设备列表的内容吧 baseStation 作为控件BaseStation的选择值（option） 让用户可以点击选择，
+当用户选择好baseStation后 将baseStation为用户选择类型的number 作为控件Number的选择值（option） 让用户可以点击选择
+
+类似于选择省份后选择市；这种操作； 这个就是要显示从服务器获取到的；我的静态页面里是写死的
+
+POST 需要传输数据  "Position"  定位地址 演示版本中为任意值
+
+http://162.219.124.143:8080/AdvancedRay/GetDevicesList 
+获取成功回复
+{
+	"code":0,
+	"data":
+		{
+			"Devicesinfo":
+				[
+					{
+						"number":{"number":[0,1,2,3,4,5,6,7,8,9]},
+						"baseStation":"上地",
+						"position":"北京"
+					},
+					{
+						"number":{"number":[0,1,2,3,4]},
+						"baseStation":"西二旗",
+						"position":"北京"
+					}
+				]
+		},
+	"message":"success"
+}
+number：	 编号
+baseStation：基站
+position   ：地址
+
+
+/***************************************************************/
+
+当用户选择完了BaseStation Number 之后 如果点击Readswitch 那么就调用下面的接口获取设备状态，一次获取不成功再获取一次 直到获取成功或者获取三次不成功；也就是尝试三次失败了之后就提示失败；
+获取成功之后就将获取到的值显示在对应的固件上面 获取过程中Readswitch为打开状态 获取完成后Readswitch 变为关闭状态 
+
+POST 需要传输数据  "BaseStation"  基站地址  "Number" 编号
+http://162.219.124.143:8080/AdvancedRay/ReadDevicesStatus
+读取成功回复
+{
+	"code":2,
+	"data":
+	{
+		"current":8.575763702392578,
+		"baseTemperature":88.7981185913086,
+		"brightness":0,
+		"deviceTemperature":66.04856872558594,
+		"colorTemperature":4759.8720703125,
+		"voltage":44.641822814941406
+	},
+	"message":"success"
+} 
+current：电流
+baseTemperature：基准温度
+brightness：亮度
+deviceTemperature：设备温度
+colorTemperature：色温
+voltage：电压
+
+
+
+/***************************************************************/
+
+当用户选择完了BaseStation Number 之后 如果点击SetUPswitch 那么就调用下面的接口设置设备的基准温度，亮度，色温。就是将BaseTemperature ColorTemperature Brightness这三个控件的值POST过去，同样的也是设置三次直到成功为止
+成功了会返回如下数据，返回的baseTemperature  brightness  colorTemperature 和设置的值一致，其余为随机值 ，将下面的数据显示在对应的位置即可；设置过程中SetUPswitch为打开状态 设置完成后SetUPswitch为关闭状态；
+http://162.219.124.143:8080/AdvancedRay/SetDevices 
+
+POST 需要传输数据 "BaseStation"  基站地址  "Number" 编号 "BaseTemperature"  基准温度 "ColorTemperature" 色温 "Brightness" 亮度
+
+设置成功回复 （基准温度，亮度，色温回复设置值）
+{
+	"code":3,
+	"data":
+	{
+		"current":8.064949989318848,
+		"baseTemperature":12,
+		"brightness":0,
+		"deviceTemperature":10.606571197509766,
+		"colorTemperature":12,
+		"voltage":12
+	},
+	"message":"success"
+}
+
+current：电流
+baseTemperature：基准温度
+brightness：亮度
+deviceTemperature：设备温度
+colorTemperature：色温
+voltage：电压
+
+
+/***************************************************************/
+当用户选择完了BaseStation Number 之后 如果点击onoffswitch 就将调用下面的接口 将onoffswitch 的值传过去 "ON" 或者 "OFF"  成功会返回开关状态，返回的状态和设置的状态一致
+POST 需要传输数据 "BaseStation"  基站地址  "Number" 编号  "Switch" 开关量
+http://162.219.124.143:8080/AdvancedRay/setSwitch 
+设置成功回复
+{
+	"code":4,
+	"data":
+	{
+		"switch":"ON"
+	},
+	"message":"success"
+}
+switch：开关值
