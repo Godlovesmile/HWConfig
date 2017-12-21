@@ -63,7 +63,7 @@
 		left: 0;
 		width: 100%;
 		height: 100%;
-		background: black;
+		background:#ccc;
 	    opacity: 0.7;
 		z-index: 10;
 
@@ -76,30 +76,33 @@
 
 		padding-top: 100px;
 	}
-    #station-list li{
+	#station-list,#num-list {
+		margin: 30px 30% 0 30%;
+	}
+    .mask li {
+		list-style: none;
 		margin-top: 30px;
-		/* background: orange; */
 		font-size: 25px;
-
-		border-bottom: 1px solid black;
-		padding-left: 30%;
-
+		line-height: 30px;
+		border-radius: 10px;
 		cursor: pointer;
-	}
-	#num-list li {
-		margin-top: 20px;
 
-		border-bottom: 1px solid black;
-		
-		padding-left: 30%;
+		background: black;
+		text-align: center;
+	}
+	.mask h2 {
+		padding-left: 20%;
+		background: black;
+	}
+	.cancle-mask {
+		width: 80px;
+		height: 60px;
+		background: black;
+		border-radius: 10px;
 
-		cursor: pointer;
-	}
-	.station-mask h2 {
-		padding-left: 20%;
-	}
-	.num-mask h2 {
-		padding-left: 20%;
+		position: absolute;
+		bottom: 20px;
+		right: 20px;
 	}
 
 	/* 进度条 */
@@ -162,22 +165,21 @@
 
 <script src="./node_modules/jquery/dist/jquery.js"></script>
 <script src="./node_modules/ratchet-npm/dist/js/ratchet.js"></script>
-<!-- <script src="./node_modules/range/pickout.js"></script> -->
 <script src="./node_modules/range/jquery.range.js"></script>
 </head>
 <body>
 	<!-- 选择基站的列表 -->
-	<div class="station-mask">
+	<div class="station-mask mask">
 		<h2>基站</h2>
-		<ul id="station-list">
-		</ul>
+		<ul id="station-list"></ul>
+		<button class="cancle-mask">取消</button>
 	</div>	
 
 	<!-- num遮罩列表 -->
-	<div class="num-mask">
+	<div class="num-mask mask">
 		<h2>编号</h2>
-		<ul id="num-list">
-		</ul>
+		<ul id="num-list"></ul>
+		<button class="cancle-mask">取消</button>
 	</div>
 
 	<header class="bar bar-nav">
@@ -259,7 +261,8 @@
 	</ul>
 
 	  <script>
-		$(function(){
+		// console.log($('p').html() === '');
+		$(function () {
 // ––––––––––––––––滑动条–––––––––––––––––––
 			$('.single-slider').jRange({
 				from: 0,
@@ -437,8 +440,9 @@
 
 			// 点击num按钮进行选择
 			$('#num').click(function () {
-				// alert(2333);
-				$('.num-mask').css('display', 'block');
+				if ($('#num-list').html() !== '') {
+					$('.num-mask').css('display', 'block');
+				}
 			});
 		});
 
