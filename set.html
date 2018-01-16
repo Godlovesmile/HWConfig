@@ -68,8 +68,11 @@
 
 		padding-top: 100px;
 	}
-	#station-list,#num-list {
+	#station-list {
 		margin: 30px 30% 0 30%;
+	}
+	#num-list {
+		margin: 30px 10% 0 10%;
 	}
 	.mask {
 		overflow: auto;
@@ -206,21 +209,24 @@
 		  <p>相关调整</p>
 		  <ul class="table-view">
 				<li class="table-view-cell">
+					<span for="">温度</span>
 					<div class="demo">
 						<input id="baseTemp" type="hidden" class="single-slider"  name="BaseTemperature" />
 						<!-- <button id="g1">获取值</button> -->
 					</div>
 				</li>
 				<li class="table-view-cell">
+						<span>亮度</span>
+						<div class="demo">
+							<input id="brightness" type="hidden" class="single-slider"  name="Brightness"/>
+								<!-- <button id="g1">获取值</button> -->
+						</div>
+				</li>
+				<li class="table-view-cell">
+					<span>色度</span>
 					<div class="demo">
 						<input id="colorTemp" type="hidden" class="single-slider color-slider"  name="ColorTemperature"/>
 						<!-- <button id="g1">获取值</button> -->
-					</div>
-				</li>
-				<li class="table-view-cell">
-					<div class="demo">
-						<input id="brightness" type="hidden" class="single-slider"  name="Brightness"/>
-							<!-- <button id="g1">获取值</button> -->
 					</div>
 				</li>
 		  </ul>
@@ -303,18 +309,18 @@
 								// 展示数据
 								var data = value.data;
 								// 电压
-								$('#voltage-item').html(data.voltage.toFixed(2)+'V');
+								$('#voltage-item').html(data.Voltage.toFixed(2)+'V');
 								// 电流
-								$('#current-item').html(data.current.toFixed(2)+'A');
+								$('#current-item').html(data.Current.toFixed(2)+'A');
 								// 温度
-								$('#temp-item').html(data.deviceTemperature.toFixed(2)+'°C');
+								$('#temp-item').html(data.DeviceTemperature.toFixed(2)+'°C');
 								// 基本温度
 								// 问题改变了val值,页面并不发生变化
-								$('#baseTemp').jRange('setValue', data.baseTemperature);
+								$('#baseTemp').jRange('setValue', data.BaseTemperature);
 								// 色温
-								$('#colorTemp').jRange('setValue', data.colorTemperature);
+								$('#colorTemp').jRange('setValue', data.ColorTemperature/1024*100);
 								// brightness
-								$('#brightness').jRange('setValue', data.brightness);
+								$('#brightness').jRange('setValue', data.Brightness/1024*100);
 
 								// 关闭请求数据的按钮
 								$(".switch-one").removeAttr("checked");
@@ -333,11 +339,11 @@
 					// 编号
 					var number = $('#num').html().slice(3);
 					// 基本温度
-				    var baseTemp =  $('#baseTemp').jRange('getValue');
+				    var baseTemp =  $('#baseTemp').jRange('getValue')/100*1024;
 					// 色温
 					var colorTemp = $('#colorTemp').jRange('getValue');
 					// brightness
-					var brightness = $('#brightness').jRange('getValue');
+					var brightness = $('#brightness').jRange('getValue')/100*1024;
 					console.log('1:'+baseTemp);
 					console.log('2:'+colorTemp);
 					console.log('3:'+brightness);
@@ -412,7 +418,7 @@
 
 //––––––––––––––––––––––业务操作–––––––––––––––––––––
 			// 请求数据
-			var url = 'http://162.219.124.143:8080/AdvancedRay/GetDevicesList ';
+			var url = 'http://162.219.124.143:8080/AdvancedRay/GetDevicesList';
 			getData(url, null, function (value) {
 				if(value.message === 'success') {
 					console.log(value);
@@ -444,7 +450,7 @@
 			// 动态生成li标签
 			$('#station-list').html('');
 			$(val).each(function (index, item) {
-				$('#station-list').append('<li title="'+index+'">' + item.baseStation + '</li>');
+				$('#station-list').append('<li title="'+index+'">' + item.BaseStation + '</li>');
 			});
 
 			// 添加点击事件,利用事件代理
@@ -455,11 +461,11 @@
 					$('.station-mask').css('display', 'none');
 					// var station = event.target.innerText;
 					$('#station').html('基地 ' + event.target.innerText);
-					$('#position').html(val[index].position)
+					$('#position').html(val[index].Position)
 
 					// 根据不同基站, 选择相应基站下的编号
 					// console.log(val[index].number.number);
-					selectNum(val[index].number.number);
+					selectNum(val[index].Number.Number);
 				}
 			});
 		}
