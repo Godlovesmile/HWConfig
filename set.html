@@ -297,26 +297,35 @@
 					var baseStation = $('#station').html().slice(3);
 					// 编号
 					var number = $('#num').html().slice(3);
-					
+
+					console.log(baseStation);
+					console.log(number);
 					var url = 'http://162.219.124.143:8080/AdvancedRay/ReadDevicesStatus';
 					var data = {
 						BaseStation: baseStation,
 						Number: number
 					};
-					getData(url, data, function (value) {
-						if(value.message === 'success') {
+					$.ajax({
+						url: url,
+						type: 'post',
+						dataType: 'json',
+						data: data,
+						contentType: 'application/x-www-form-urlencoded',
+						success: function (value) {
+							console.log(value);
+							if(value.message === 'success') {
 								console.log(value);
 								// 展示数据
 								var data = value.data;
 								// 电压
-								$('#voltage-item').html(data.Voltage.toFixed(2)+'V');
+								$('#voltage-item').html((data.Voltage/100).toFixed(2)+'V');
 								// 电流
-								$('#current-item').html(data.Current.toFixed(2)+'A');
+								$('#current-item').html((data.Current/100).toFixed(2)+'A');
 								// 温度
-								$('#temp-item').html(data.DeviceTemperature.toFixed(2)+'°C');
+								$('#temp-item').html((data.DeviceTemperature/100).toFixed(2)+'°C');
 								// 基本温度
 								// 问题改变了val值,页面并不发生变化
-								$('#baseTemp').jRange('setValue', data.BaseTemperature);
+								$('#baseTemp').jRange('setValue', data.BaseTemperature/20000*100);
 								// 色温
 								$('#colorTemp').jRange('setValue', data.ColorTemperature/1024*100);
 								// brightness
@@ -329,19 +338,22 @@
 									$('.switch-one').removeClass('testswitch-checkbox');
 								}, 400);
 							}
+						}
 					});
+					// getData(url, data, function (value) {
+					// });
 				};
 			}
-			var setUPswitch = function() {
+			var setUPswitch = function () {
 				if ($("#SetUPswitch").is(':checked')) {
 					// console.log("上传数据");
 					var baseStation = $('#station').html().slice(3);
 					// 编号
 					var number = $('#num').html().slice(3);
 					// 基本温度
-				    var baseTemp =  $('#baseTemp').jRange('getValue')/100*1024;
+				    var baseTemp =  $('#baseTemp').jRange('getValue')/100*20000;
 					// 色温
-					var colorTemp = $('#colorTemp').jRange('getValue');
+					var colorTemp = $('#colorTemp').jRange('getValue')/100*1024;
 					// brightness
 					var brightness = $('#brightness').jRange('getValue')/100*1024;
 					console.log('1:'+baseTemp);
